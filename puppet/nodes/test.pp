@@ -1,0 +1,4 @@
+node test {
+        notify{'blahblah':}
+}
+
