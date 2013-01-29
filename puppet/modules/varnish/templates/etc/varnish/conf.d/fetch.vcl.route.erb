@@ -1,0 +1,17 @@
+} elsif (req.url ~ "^<%= name -%>"<% if not aliases.empty? -%><% aliases.each do |name_alias| -%> ||
+         req.url ~ "^<%= name_alias -%>"<% end -%><% end -%>) {
+<% if not nocache.empty? -%>
+
+    # Disable caching for certain locations.
+    if (req.url ~ "<%= [nocache].flatten.join('" ||
+        req.url ~ "') -%>") {
+        # Prevent the cache status from persisting.
+        set beresp.ttl = 0s;
+<% if scope.function_versioncmp([scope.lookupvar('varnish::config::varnish_version_real'), '3.0.0']) >= 0 -%>
+        return(hit_for_pass);
+<% else -%>
+        return(pass);
+<% end -%>
+    }
+<% end -%>
+

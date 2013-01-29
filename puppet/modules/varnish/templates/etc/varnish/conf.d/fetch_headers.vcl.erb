@@ -1,0 +1,11 @@
+#
+# fetch.vcl is included after this has executed, do nothing in here but touch
+# headers... do *NOT* return() a request
+#
+<% if scope.function_versioncmp([varnish_version_real, '3.0.0']) >= 0 -%>
+
+# Enable GZIP for common content types including vendored constructs.
+if (beresp.http.content-type ~ "^text/|^application/.*(?:json|xml|javascript)(?:;|$)") {
+    set beresp.do_gzip = true;
+}
+<% end -%>

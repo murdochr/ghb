@@ -1,4 +1,4 @@
-node rm-ubuntu1 {
+node rm-ubuntu {
 	notify{'blah':}
 }
 

@@ -1,0 +1,4 @@
+} else {
+    # Catchall for unrouted requests.
+    error 404 "No suitable backend for this request";
+}

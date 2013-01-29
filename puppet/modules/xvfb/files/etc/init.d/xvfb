@@ -1,0 +1,81 @@
+#!/bin/sh
+# xvfb          virtual frame buffer
+#
+# chkconfig: 2345 90 60
+# description: vfb
+
+export XVFB_USER=xvfb
+export XVFB_STARTUP_LOG=/var/log/xvfb/xvfb.log
+export PATH='/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin'
+
+# source function library
+. /etc/rc.d/init.d/functions
+
+RETVAL=0
+prog="xvfb"
+runlevel=$(set -- $(runlevel); eval "echo \$$#" )
+
+
+if [ -z "$1" ]; then
+    echo "`basename $0` {start|stop|status}"
+    exit
+fi
+
+if [ -x /sbin/runuser ]; then
+    SU=runuser
+else
+    SU=su
+fi
+
+start() {
+    echo "Starting Xvfb..."
+   
+    PS=`ps aux|grep -v grep|grep "/usr/bin/Xvfb :1 -ac"|wc -l`
+    if [ $PS == '3' ];then
+      echo 'xvmb seems to be running. Aborting...'
+      exit 1
+    fi
+    
+ 
+    $SU -l $XVFB_USER -c "nohup /usr/bin/Xvfb :1 -ac > $XVFB_STARTUP_LOG 2>&1" &
+    SPID=$$
+    if [ $? == 0 ];then
+        echo $SPID 
+        success;
+    else
+        failure;
+    fi
+
+}
+
+stop() {
+    echo "Stopping Xvfb..."
+    killall Xvfb
+    EC=$?
+    if [ $EC == 0 ]; then
+      success
+      exit $EC
+    else
+      failure
+      exit $EC
+    fi
+}
+
+status() {
+    P=`ps aux|grep -v grep|grep "/usr/bin/Xvfb :1 -ac"|wc -l`
+    if [ $P == '3' ] ;then
+      echo 'xvfb seems to be up'
+      exit 0
+    else
+      echo 'xvfb seems to be down'
+      exit 1
+    fi
+}
+
+case "$1" in
+    start) shift; start;;
+    stop) shift; stop;;
+    status) shift; status;;
+
+esac
+
