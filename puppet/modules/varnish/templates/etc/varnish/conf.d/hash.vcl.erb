@@ -1,8 +1,0 @@
-# Vary on original request protocol if provided by LB above.
-if (req.http.X-Forwarded-Proto) {
-<% if scope.function_versioncmp([varnish_version_real, '3.0.0']) >= 0 -%>
-    hash_data(req.http.X-Forwarded-Proto);
-<% else -%>
-    set req.hash += req.http.X-Forwarded-Proto;
-<% end -%>
-}

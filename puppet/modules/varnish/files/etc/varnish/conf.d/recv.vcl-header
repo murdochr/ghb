@@ -1,5 +1,0 @@
-if (req.url != req.url) {
-    # Dummy condition that will never be true. Required by puppet-concat
-    # because we don't know which entry in a chain of "} elsif {" will be
-    # the first.
-
